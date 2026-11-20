@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1c16">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Costco India List">
+<title>Costco MK → India gift list</title>
+<style>
+:root{
+  --bg:#f4efe4;
+  --ink:#1a1c16;
+  --muted:#5c5a52;
+  --card:#fffdf8;
+  --line:#e3d9c4;
+  --accent:#9b1c1c;
+  --accent2:#0f5c4c;
+  --gold:#c4a35a;
+  --chip:#efe6d4;
+  --ok:#0f5c4c;
+  --warn:#8a4b12;
+  --shadow:0 1px 2px rgba(26,28,22,.06),0 8px 24px rgba(26,28,22,.06);
+  --tap:48px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.45;
+}
+a{color:var(--accent2)}
+header.app{
+  position:sticky;top:0;z-index:40;
+  background:rgba(244,239,228,.92);
+  backdrop-filter:saturate(1.4) blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:10px 14px 12px;
+  padding-top:max(10px,env(safe-area-inset-top));
+}
+.brand{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.brand h1{font-size:1.15rem;margin:0;letter-spacing:-.02em}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:.82rem}
+.stats{text-align:right;font-size:.8rem;color:var(--muted);white-space:nowrap}
+.stats b{color:var(--ink);font-size:1rem}
+.search{
+  margin-top:10px;display:flex;gap:8px;
+}
+.search input,.qty input,button,.toggle{
+  font:inherit;
+}
+.search input{
+  flex:1;height:var(--tap);border:1px solid var(--line);border-radius:12px;
+  padding:0 14px;background:#fff;font-size:1rem;
+}
+.tools{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+button,a.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line);
+  background:#fff;color:var(--ink);text-decoration:none;font-weight:600;font-size:.85rem;
+  cursor:pointer;
+}
+button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+button.ghost{background:transparent}
+.toggles{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.toggle{
+  display:inline-flex;align-items:center;gap:8px;min-height:40px;
+  padding:0 10px;background:var(--chip);border-radius:999px;font-size:.85rem;font-weight:600;
+  border:0;cursor:pointer;
+}
+.toggle input{width:18px;height:18px;accent-color:var(--accent)}
+.pills{
+  display:flex;gap:8px;overflow-x:auto;padding:10px 14px 8px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  position:sticky;top:var(--sticky2,138px);z-index:30;background:var(--bg);
+}
+.pills::-webkit-scrollbar{display:none}
+.pills a,.filter{
+  flex:0 0 auto;padding:8px 12px;border-radius:999px;background:var(--chip);
+  color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:650;border:1px solid transparent;
+}
+.pills a:hover,.filter.on{background:var(--ink);color:#fff}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px;-webkit-overflow-scrolling:touch}
+.filter{cursor:pointer;border:1px solid var(--line);background:#fff}
+main{padding:0 14px 80px;max-width:740px;margin:0 auto}
+.note,.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:14px 16px;margin:10px 0;box-shadow:var(--shadow);
+}
+.note h2,.sec h2{margin:0 0 8px;font-size:1.02rem}
+.note ul,.note ol{margin:8px 0 0;padding-left:1.15rem}
+.note li{margin:4px 0}
+.warn{border-left:4px solid var(--warn)}
+.ok{border-left:4px solid var(--ok)}
+.sec{margin-top:22px;scroll-margin-top:200px}
+.sec h2{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.sec h2 span{font-size:.78rem;color:var(--muted);font-weight:500}
+.item{
+  display:grid;grid-template-columns:var(--tap) 1fr auto;gap:8px 10px;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:10px 10px 10px 6px;margin:8px 0;box-shadow:var(--shadow);
+  align-items:start;
+}
+.item.ticked{background:#eef6f2;border-color:#cfe0d8}
+.item.hidden{display:none}
+.check{
+  width:var(--tap);height:var(--tap);display:flex;align-items:center;justify-content:center;
+}
+.check input{width:26px;height:26px;accent-color:var(--accent2)}
+.meta h3{margin:2px 0 2px;font-size:.98rem;letter-spacing:-.01em}
+.meta .sub{color:var(--muted);font-size:.82rem}
+.why{margin:4px 0 0;font-size:.84rem}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.badge{
+  font-size:.7rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;
+  background:var(--chip);border-radius:999px;padding:3px 8px;color:#3f3c34;
+}
+.badge.hot{background:#9b1c1c;color:#fff}
+.badge.elders{background:#4a3b1f;color:#f4e7c5}
+.badge.women{background:#6b2d5b;color:#fde8f4}
+.badge.men{background:#1d3557;color:#dce9f8}
+.badge.kids{background:#8a4b12;color:#fff3e0}
+.badge.all{background:#dfe8e3;color:#1a3a32}
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:86px}
+.price{font-weight:800;font-size:.95rem}
+.price.na{font-weight:650;font-size:.72rem;color:var(--muted);text-align:right;max-width:96px}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.qty button{min-height:36px;width:36px;border:0;border-radius:0;background:#f6f1e6;font-size:1.1rem}
+.qty input{width:36px;height:36px;border:0;text-align:center;font-weight:700;padding:0}
+.links{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:8px;padding:0 4px 4px}
+.links a{font-size:.8rem;font-weight:650}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+footer{padding:8px 14px 28px;color:var(--muted);font-size:.75rem;max-width:740px;margin:0 auto}
+.store a{font-weight:700}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#16150f;--ink:#f3eee3;--muted:#b7b09f;--card:#221f18;--line:#3a352b;--chip:#2c281f;--shadow:none}
+  .search input,button,a.btn,.qty,.qty button{background:#2a261e;color:var(--ink);border-color:var(--line)}
+  button.primary{background:#f3eee3;color:#16150f;border-color:#f3eee3}
+  .item.ticked{background:#1b2a24;border-color:#2c4a40}
+  .filter{background:#2a261e}
+}
+</style>
+</head>
+<body>
+<header class="app" id="top">
+  <div class="brand">
+    <div>
+      <h1>Costco MK → Andhra gifts</h1>
+      <p>India trip · 12 Dec 2026 · Milton Keynes warehouse</p>
+    </div>
+    <div class="stats">
+      <div><b id="tickedCount">0</b> ticked</div>
+      <div id="totalLine">£0.00 known</div>
+    </div>
+  </div>
+  <div class="search">
+    <input id="q" type="search" placeholder="Search chocolates, cashews, whisky…" autocomplete="off">
+  </div>
+  <div class="toggles">
+    <label class="toggle"><input type="checkbox" id="onlyTicked"> Show only ticked</label>
+    <label class="toggle"><input type="checkbox" id="onlyHot"> Priority picks</label>
+  </div>
+  <div class="tools">
+    <button type="button" id="copyBtn" class="primary">Copy ticked list</button>
+    <button type="button" id="shareBtn">Share</button>
+    <button type="button" id="clearBtn" class="ghost">Clear ticks</button>
+  </div>
+</header>
+
+<nav class="pills" id="jumps" aria-label="Categories"></nav>
+<div class="filters" id="whoFilters" aria-label="Who it's for"></div>
+
+<main>
+  <section class="note store ok" id="store">
+    <h2>Costco Milton Keynes — today</h2>
+    <p><strong>Mandeville Drive, Kingston, Milton Keynes MK10 0DB</strong><br>
+    Tel <a href="tel:+441908285025">01908 285 025</a> ·
+    <a href="https://www.costco.co.uk/store-finder/MiltonKeynes" target="_blank" rel="noopener">Store page</a> ·
+    <a href="https://maps.google.com/?q=Costco+Milton+Keynes+MK10+0DB" target="_blank" rel="noopener">Maps</a></p>
+    <ul>
+      <li><strong>Gold Star &amp; Business:</strong> Mon–Fri 11:00–20:30 · Sat 09:30–19:00 · Sun 11:00–17:00</li>
+      <li><strong>Executive members:</strong> Mon–Fri from 10:00 (same close). Bank holidays 10:00–18:00.</li>
+      <li><strong>Friday 20 Nov 2026:</strong> open until 20:30. Membership card needed.</li>
+    </ul>
+    <p class="sub">Hours from Costco’s official Milton Keynes store page. Online prices below were read from costco.co.uk on 20 Nov 2026 (Europe/London). Warehouse shelf price and stock can differ — if there’s no price, check the shelf.</p>
+  </section>
+
+  <section class="note warn" id="allowance">
+    <h2>India customs &amp; bags — read this first</h2>
+    <ul>
+      <li><strong>Alcohol:</strong> <strong>2 litres</strong> of alcoholic liquor or wine per adult passenger arriving by air, duty-free. This is current under India’s <em>Baggage Rules, 2026</em> (in force 2 Feb 2026). Two 70cl bottles = 1.4L (safe). A 1L Baileys plus a 70cl whisky = 1.7L (still under). Do not go over 2L unless you will declare and pay duty.</li>
+      <li><strong>Andhra Pradesh:</strong> AP is not a dry state. Duty-free alcohol cleared at the airport is for <strong>personal use only</strong> — do not sell it. Keep the receipt and original packaging. Some relatives may not drink; take chocolates and dry fruits as the default “everyone” gifts.</li>
+      <li><strong>Goods allowance:</strong> for an Indian resident / person of Indian origin arriving by air, the 2026 free allowance for other goods is <strong>₹75,000</strong> (this replaced the older ₹50,000 figure). Used personal effects you reasonably need are separate. One new laptop is also allowed for passengers 18+. Over the limit → red channel and duty.</li>
+      <li><strong>Airline bags:</strong> liquids over 100ml must go in <strong>checked baggage</strong> (UK security). Weigh tins, nuts, oil and bottles — they add up fast. Typical long-haul is 23kg per checked bag (check your ticket).</li>
+      <li><strong>OK:</strong> chocolates, nuts, tea/coffee, vitamins for personal/family use (keep original packs). <strong>Don’t pack:</strong> meat or meat products, fresh food, or extra gold/silver beyond jewellery limits.</li>
+      <li><strong>Plugs:</strong> India is 230V (fine). Wall plugs are Type C/D, not UK Type G — pack a small adaptor, or prefer USB-C gadgets.</li>
+      <li>Confirm before you fly: <a href="https://www.cbic.gov.in/" target="_blank" rel="noopener">CBIC</a>. This is a trip checklist, not legal advice.</li>
+    </ul>
+  </section>
+
+  <div id="list"></div>
+  <p class="empty" id="empty" hidden>No items match that filter.</p>
+
+  <section class="note" id="packing">
+    <h2>Easy way to shop in the warehouse</h2>
+    <ol>
+      <li>Tick what you want here (it saves on this phone). Start with the priority picks.</li>
+      <li>Use each item’s <strong>Costco search</strong> link if you want to double-check the pack size, then walk the aisles below.</li>
+      <li>Typical locations (generic — MK layout can vary): confectionery near snacks; nuts/dried fruit nearby; vitamins in health/pharmacy; beauty in personal care; tea/coffee in grocery; spirits in the alcohol cage (ID); electronics on the warehouse aisles; towels/bedding in home.</li>
+      <li>At the till, tick as you load the trolley and copy the list for your packing check at home.</li>
+    </ol>
+  </section>
+</main>
+<footer>
+  Built 20 Nov 2026 for a 12 Dec 2026 trip to Andhra Pradesh. Prices only where the costco.co.uk product page was opened and a price was read; everything else says “check shelf price”. Stock at Milton Keynes is not guaranteed from the website.
+</footer>
+
+<script>
+const ITEMS = [
+  // Chocolates
+  {id:"ferrero-t26",cat:"chocolates",name:"Ferrero Rocher T26+4, 375g (30 pieces)",price:8.49,url:"https://www.costco.co.uk/Grocery-Household/Nuts-Snacks-Confectionery/Boxed-Chocolate/Ferrero-Rocher-T264-375g/p/536452",q:"Ferrero Rocher T26",who:["all","women","kids"],hot:true,aisle:"Chocolate / confectionery",why:"The classic feel-good gift. Easy to carry several boxes and split across the family."},
+  {id:"ferrero-5pk",cat:"chocolates",name:"Ferrero Rocher gift boxes, 5 × 200g",price:27.19,url:"https://www.costco.co.uk/Grocery-Household/Nuts-Snacks-Confectionery/Boxed-Chocolate/Ferrero-Rocher-Chocolate-Gift-Box-5-x-200g/p/3258",q:"Ferrero Rocher gift box",who:["all","women"],hot:true,aisle:"Chocolate / confectionery",why:"Best if you want ready-made gifts for five households. Better value than buying the same boxes in India."},
+  {id:"ferrero-48",cat:"chocolates",name:"Ferrero Rocher Collection, 48 pieces",price:null,q:"Ferrero Rocher 48",who:["all","women"],aisle:"Chocolate / confectionery",why:"Mixed Ferrero flavours; a slightly more special box than plain Rocher."},
+  {id:"lindor-1kg",cat:"chocolates",name:"Lindt Lindor Assorted truffles, 1kg",price:22.99,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Lindt-Lindor-Assorted-Chocolate-Truffles-1kg/p/335251",q:"Lindt Lindor Assorted 1kg",who:["all","women","elders"],hot:true,aisle:"Chocolate / confectionery",why:"Premium, widely loved, and much dearer in Indian shops. One big box shares well."},
+  {id:"lindor-4x",cat:"chocolates",name:"Lindt Lindor truffles, 4 × 200g",price:16.29,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Lindt-Lindor-Chocolate-Truffles-4-x-200g/p/115327",q:"Lindt Lindor 4 x 200g",who:["all","women","kids"],hot:true,aisle:"Chocolate / confectionery",why:"Four smaller boxes — easier to give to four people than one 1kg bag."},
+  {id:"qstreet",cat:"chocolates",name:"Quality Street tin, 1.93kg",price:19.99,url:"https://www.costco.co.uk/Grocery-Household/Nuts-Snacks-Confectionery/Boxed-Chocolate/Nestle-Quality-Street-Tin-193kg/p/295740",q:"Quality Street tin",who:["all","kids","elders"],hot:true,aisle:"Chocolate / confectionery",why:"A family tin for the living room. Very ‘NRI coming home’ and cheaper in bulk than Tesco/Asda."},
+  {id:"celebrations",cat:"chocolates",name:"Celebrations tub / tin (standard boxed chocolates)",price:null,q:"Celebrations",who:["all","kids"],aisle:"Chocolate / confectionery",why:"Familiar mixed chocolates. Confirm it’s the chocolate tub, not the hot-chocolate sachets."},
+  {id:"heroes-roses",cat:"chocolates",name:"Cadbury Heroes or Roses tin",price:null,q:"Cadbury Heroes Roses",who:["all","kids","elders"],aisle:"Chocolate / confectionery",why:"Always popular with mixed-age families. Seasonal tins often appear in the warehouse even if not online."},
+  {id:"toblerone",cat:"chocolates",name:"Toblerone bars / gift pack (not the 4.5kg giant)",price:null,q:"Toblerone",who:["all","kids"],aisle:"Chocolate / confectionery",why:"Swiss bar people actually want. Skip the 4.5kg display bar — too heavy and awkward in luggage."},
+  {id:"ks-belgian",cat:"chocolates",name:"Kirkland Signature luxury Belgian chocolates",price:null,q:"Kirkland Belgian chocolates",who:["all","women","elders"],aisle:"Chocolate / confectionery",why:"Costco’s own gift box; often excellent value versus branded Belgian tins."},
+  {id:"pistachio-choc",cat:"chocolates",name:"Pistachio / kadaifi style chocolate (e.g. Evadore)",price:null,q:"pistachio chocolate kadaifi",who:["women","all"],aisle:"Chocolate / confectionery",why:"Trendy and feels special. Good extra if you already have Ferrero and Lindt."},
+
+  // Nuts
+  {id:"ks-cashews",cat:"nuts",name:"Kirkland Signature salted cashews, 1.13kg",price:14.59,url:"https://www.costco.co.uk/Grocery-Household/Nuts-Snacks-Confectionery/Nuts/Kirkland-Signature-Salted-Cashews-113kg/p/1671933",q:"Kirkland salted cashews",who:["all","elders"],hot:true,aisle:"Nuts / dried fruit",why:"Andhra favourite. Big bag, usually far better value than UK superstores or imported cashews in India."},
+  {id:"ks-pistachios",cat:"nuts",name:"Kirkland Signature pistachios, 1.36kg",price:15.49,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Kirkland-Signature-Pistachios-136kg/p/1359223",q:"Kirkland pistachios",who:["all","elders","women"],hot:true,aisle:"Nuts / dried fruit",why:"Premium dry-fruit gift. Pistachios are expensive in India; this bag is one of the best-value items in the warehouse."},
+  {id:"ks-almonds",cat:"nuts",name:"Kirkland Signature whole almonds, 1.36kg",price:13.39,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Kirkland-Signature-Whole-Almonds-136kg/p/720168",q:"Kirkland whole almonds",who:["all","elders"],hot:true,aisle:"Nuts / dried fruit",why:"Everyday health gift for parents and grandparents. Light for the weight, easy to pack."},
+  {id:"ks-walnuts",cat:"nuts",name:"Kirkland Signature snacking walnuts, 708g",price:9.49,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Kirkland-Signature-Hand-Shelled-Snacking-Walnuts-708g/p/1455545",q:"Kirkland walnuts",who:["elders"],aisle:"Nuts / dried fruit",why:"Nice for elders (often used in badam/akhrot mixes). Smaller bag, easy add-on."},
+  {id:"raisins",cat:"nuts",name:"Sun-Maid California raisins, 2.04kg",price:10.99,url:"https://www.costco.co.uk/Grocery-Household/Nuts-Snacks-Confectionery/Dried-Fruit/Sun-Maid-California-Raisins-204kg/p/503352",q:"Sun Maid raisins",who:["all","kids","elders"],aisle:"Nuts / dried fruit",why:"Solid value for cooking and snacking, though less ‘special’ than pistachios or cashews."},
+  {id:"dates",cat:"nuts",name:"Pitted dates (e.g. Sunny Fruit 1kg)",price:null,q:"pitted dates",who:["elders","all"],aisle:"Nuts / dried fruit",why:"Traditional, well received by elders. Check the shelf price against Indian dates before buying a lot."},
+  {id:"mixed-nuts",cat:"nuts",name:"Kirkland mixed nuts (bag or snack packs)",price:null,q:"Kirkland mixed nuts",who:["all","elders"],aisle:"Nuts / dried fruit",why:"Good sharing snack. Prefer a resealable bag for travel; snack packs are handy to give out."},
+
+  // Health
+  {id:"ks-multi",cat:"health",name:"Kirkland Signature daily multivitamins, 600 count",price:14.98,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Kirkland-Signature-Daily-Multi-Vitamins-600-Count/p/478272",q:"Kirkland daily multi vitamins",who:["elders","all"],hot:true,aisle:"Health / pharmacy aisle",why:"Huge count, typically much cheaper than UK or Indian branded multis. Keep in original tub for customs."},
+  {id:"ks-fishoil",cat:"health",name:"Kirkland Signature fish oil & omega-3, 400 softgels",price:13.69,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Kirkland-Signature-Fish-Oil-Omega-3-400-Count/p/308510",q:"Kirkland fish oil",who:["elders"],hot:true,aisle:"Health / pharmacy aisle",why:"Practical gift for parents. Personal-use vitamins are normally fine — do not remove labels."},
+  {id:"ks-gluco",cat:"health",name:"Kirkland glucosamine (often with MSM) for joints",price:null,q:"Kirkland glucosamine MSM",who:["elders"],aisle:"Health / pharmacy aisle",why:"Thoughtful for older family members with knee/joint aches. Confirm the exact pack on the shelf."},
+  {id:"vitd",cat:"health",name:"Vitamin D3 / calcium (Kirkland or equivalent)",price:null,q:"Kirkland vitamin D3 calcium",who:["elders"],aisle:"Health / pharmacy aisle",why:"Useful add-on if parents already have a multi and fish oil. Personal use only."},
+
+  // Personal care
+  {id:"perfume-w",cat:"care",name:"Women’s perfume / fragrance gift set",price:null,q:"perfume gift set women",who:["women"],hot:true,aisle:"Personal care / beauty",why:"High feel-good if a set you recognise is on offer. Designer sets are often cheaper than Indian duty-paid prices."},
+  {id:"perfume-m",cat:"care",name:"Men’s aftershave / fragrance gift set",price:null,q:"aftershave gift set men",who:["men"],aisle:"Personal care / beauty",why:"Good alternative or addition to whisky for uncles and brothers who may not drink."},
+  {id:"olay",cat:"care",name:"Olay moisturiser or gift set (e.g. Total Effects)",price:null,q:"Olay Total Effects",who:["women","elders"],aisle:"Personal care / beauty",why:"Well-known brand in India, usually better packed-price at Costco."},
+  {id:"nivea",cat:"care",name:"Nivea Creme tins or body-care gift set",price:null,q:"Nivea creme",who:["elders","women","all"],aisle:"Personal care / beauty",why:"Familiar, practical, and liked by elders. Only worth it in a multipack or gift set."},
+  {id:"dove",cat:"care",name:"Dove beauty bars or body-wash multipack",price:null,q:"Dove beauty bar",who:["all","women"],aisle:"Personal care / beauty",why:"Fine if it’s a genuine bulk deal; skip if it crowds out nuts and chocolate (soap is easy to buy in India)."},
+  {id:"gillette",cat:"care",name:"Gillette Fusion / Mach3 blade multipack",price:null,q:"Gillette Fusion blades",who:["men"],aisle:"Personal care / shaving",why:"Blades are often painfully expensive in India. A Costco multipack is a very practical men’s gift."},
+  {id:"oralb-brush",cat:"care",name:"Oral-B electric toothbrush",price:null,q:"Oral-B electric toothbrush",who:["all","elders","kids"],aisle:"Personal care / oral care or electronics",why:"Feel-good gadget. India is 230V (OK) but you will need a UK-to-India plug adaptor."},
+  {id:"oralb-paste",cat:"care",name:"Oral-B toothpaste multipack",price:null,q:"Oral-B toothpaste",who:["all"],aisle:"Personal care / oral care",why:"Only if the unit price is clearly better than Tesco/Asda — toothpaste is heavy for the joy it gives."},
+
+  // Kitchen
+  {id:"nescafe",cat:"kitchen",name:"Nescafé Gold Blend instant, 750g",price:27.49,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Nescafe-Gold-Blend-Instant-Coffee-Granules-750g/p/35000",q:"Nescafe Gold Blend 750g",who:["all","elders","men"],hot:true,aisle:"Tea & coffee aisle",why:"Classic NRI kitchen gift. The big tin is what people actually use, and it’s pricier in India."},
+  {id:"twinings-eg",cat:"kitchen",name:"Twinings Earl Grey, 300 tea bags",price:null,q:"Twinings Earl Grey 300",who:["elders","women","all"],aisle:"Tea & coffee aisle",why:"Nice for tea-drinking relatives. 300s are the Costco-value format."},
+  {id:"twinings-eb",cat:"kitchen",name:"Twinings English Breakfast, 300 tea bags",price:null,q:"Twinings English Breakfast 300",who:["elders","all"],aisle:"Tea & coffee aisle",why:"Safer everyday flavour than Earl Grey if you’re unsure what they drink."},
+  {id:"ks-coffee",cat:"kitchen",name:"Kirkland coffee (beans or ground)",price:null,q:"Kirkland coffee",who:["men","all"],aisle:"Tea & coffee aisle",why:"Only if someone at home has a cafetière or machine. Most Andhra homes will prefer Nescafé Gold."},
+  {id:"olive-oil",cat:"kitchen",name:"Kirkland Signature extra virgin olive oil, 2L",price:21.49,url:"https://www.costco.co.uk/Grocery-Household/Food-Cupboard/Oils-Vinegars-Dressings/Kirkland-Signature-Extra-Virgin-Olive-Oil-2L/p/131511",q:"Kirkland extra virgin olive oil 2L",who:["elders","all"],aisle:"Oils / grocery",why:"Genuine quality EVOO, often used as a health gift. Heavy liquid: wrap well, checked bag only, risk of leaks."},
+  {id:"saffron",cat:"kitchen",name:"Saffron (only if the shelf price is clearly a bargain)",price:null,q:"saffron",who:["elders","women"],aisle:"Spices / speciality grocery",why:"Skip unless obviously cheap. Kashmir saffron is already available in India; don’t pay a tourist price."},
+
+  // Kids
+  {id:"lego",cat:"kids",name:"LEGO set (age-suitable)",price:null,q:"LEGO",who:["kids"],hot:true,aisle:"Toys",why:"Highest feel-good kids’ gift in the warehouse. Check age and that the box will fit in the suitcase."},
+  {id:"toys",cat:"kids",name:"Other kids’ toys (Hot Wheels, dolls, games)",price:null,q:"toys",who:["kids"],aisle:"Toys",why:"Walk the aisle for something that fits the child’s age. Avoid huge boxed items that waste luggage space."},
+  {id:"kids-vit",cat:"kids",name:"Children’s vitamin gummies",price:null,q:"children vitamins gummies",who:["kids"],aisle:"Health / pharmacy aisle",why:"Optional. Keep sealed and original-packaged. Not a substitute for the main dry-fruit gifts."},
+  {id:"baby-care",cat:"kids",name:"Baby toiletries / nappies (only if there is a baby in the family)",price:null,q:"baby toiletries",who:["kids"],aisle:"Baby aisle",why:"Skip infant formula (import rules are messy). Toiletries only if you know there’s a baby and the deal is real."},
+
+  // Home textiles
+  {id:"towels",cat:"home",name:"Kirkland towels (bath or microfibre pack)",price:null,q:"Kirkland towels",who:["all","elders"],aisle:"Home / textiles",why:"Kirkland towels have a strong quality reputation. Bulky — only if you have spare suitcase space."},
+  {id:"blanket",cat:"home",name:"Kirkland blanket / throw",price:null,q:"Kirkland blanket throw",who:["elders","all"],aisle:"Home / bedding",why:"A comfort gift for elders, but bulky. Coastal Andhra winters are mild, so don’t over-pack bedding."},
+  {id:"clothes",cat:"home",name:"Kirkland socks, tees or basics (if sizes are clear)",price:null,q:"Kirkland socks t-shirt",who:["all"],aisle:"Clothing",why:"Only with known sizes. Branded basics can be good value; fashion clothes are a risk."},
+
+  // Electronics
+  {id:"powerbank",cat:"electronics",name:"Anker (or similar) USB-C power bank",price:null,q:"Anker power bank",who:["all","men","kids"],hot:true,aisle:"Electronics / mobile accessories",why:"Useful for everyone, no UK plug problem if it’s USB-C. Must travel in carry-on, not checked baggage."},
+  {id:"headphones",cat:"electronics",name:"Headphones / earbuds (Anker, Sony, JBL etc.)",price:null,q:"headphones earbuds",who:["kids","men","all"],aisle:"Electronics",why:"Good feel-good if a known brand is discounted. Compare with Amazon/Currys in your head before you commit."},
+  {id:"watch",cat:"electronics",name:"Smartwatch or fitness band",price:null,q:"smartwatch",who:["men","women","all"],aisle:"Electronics",why:"Only if the deal is clearly better than UK or Indian high-street prices. Check charger plug and warranty region."},
+  {id:"adaptor",cat:"electronics",name:"UK to India travel adaptor (Type D/C)",price:null,q:"travel adaptor India",who:["all"],aisle:"Electronics / travel",why:"Worth grabbing if you see one — every UK-plug gift (toothbrush, some chargers) will need it."},
+
+  // Alcohol
+  {id:"glenfiddich",cat:"alcohol",name:"Glenfiddich 12 Year Old single malt, 70cl",price:33.19,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Glenfiddich-12-Year-Old-Single-Malt-Whisky-70cl/p/30767",q:"Glenfiddich 12",who:["men","elders"],hot:true,aisle:"Alcohol cage (ID)",why:"Safe, recognised single-malt gift. Two 70cl bottles = 1.4L, comfortably inside the 2L allowance."},
+  {id:"jw-gold",cat:"alcohol",name:"Johnnie Walker Gold Label Reserve, 70cl",price:37.99,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Johnnie-Walker-Gold-Label-Reserve-Blended-Scotch-Whisky-70cl/p/160079",q:"Johnnie Walker Gold Label",who:["men","elders"],hot:true,aisle:"Alcohol cage (ID)",why:"Status gift in many Andhra homes. Often a sharper ‘wow’ than a supermarket blend."},
+  {id:"jw-green",cat:"alcohol",name:"Johnnie Walker Green Label, 70cl",price:37.99,url:"https://www.costco.co.uk/Wines-Spirits-Beer/Spirits/Whisky/Johnnie-Walker-Green-Label-Blended-Malt-Scotch-Whisky-70cl/p/504623",q:"Johnnie Walker Green Label",who:["men"],aisle:"Alcohol cage (ID)",why:"More of an enthusiast bottle than Gold. Choose Gold if the recipient just wants a known JW gift."},
+  {id:"jw-black",cat:"alcohol",name:"Johnnie Walker Black Label, 70cl",price:null,q:"Johnnie Walker Black Label",who:["men","elders"],aisle:"Alcohol cage (ID)",why:"The most widely recognised JW in India. Check the warehouse shelf if Gold feels too spendy."},
+  {id:"ks-scotch",cat:"alcohol",name:"Kirkland Signature Scotch (8-year or blended, often 1L)",price:null,q:"Kirkland Scotch whisky",who:["men"],aisle:"Alcohol cage (ID)",why:"Usually the best £/litre in the building. A 1L bottle uses half of your 2L allowance — plan the second bottle accordingly."},
+  {id:"baileys",cat:"alcohol",name:"Baileys Original Irish Cream, 1L",price:14.98,url:"https://www.costco.co.uk/Grocery-Household/Grocery-Delivery/Baileys-Original-Irish-Cream-Liqueur-1L/p/11668",q:"Baileys Original 1L",who:["women","all"],aisle:"Alcohol cage (ID)",why:"Popular with people who don’t love neat whisky. 1L uses half the allowance; cream liqueur prefers a cooler bag."},
+  {id:"gin",cat:"alcohol",name:"Gin (Gordon’s, Tanqueray, or Kirkland)",price:null,q:"gin Tanqueray Gordons Kirkland",who:["men","women"],aisle:"Alcohol cage (ID)",why:"Better for younger relatives than for traditional elders. Still counts toward the same 2L cap."},
+  {id:"wine",cat:"alcohol",name:"Wine (only if you know they drink it)",price:null,q:"wine",who:["women","men"],aisle:"Alcohol cage (ID)",why:"Less typical as an Andhra family gift than whisky. Bottles are fragile — pad well in checked luggage."}
+];
+
+const CATS = [
+  {id:"chocolates",label:"Chocolates & sweets"},
+  {id:"nuts",label:"Dry fruits & nuts"},
+  {id:"health",label:"Vitamins & health"},
+  {id:"care",label:"Personal care"},
+  {id:"kitchen",label:"Kitchen"},
+  {id:"kids",label:"Baby & kids"},
+  {id:"home",label:"Towels & clothes"},
+  {id:"electronics",label:"Electronics"},
+  {id:"alcohol",label:"Alcohol"}
+];
+const WHO = [
+  {id:"all",label:"Everyone"},
+  {id:"elders",label:"Elders"},
+  {id:"women",label:"Women"},
+  {id:"men",label:"Men"},
+  {id:"kids",label:"Kids"}
+];
+
+const KEY = "costco-india-list-v1";
+const state = JSON.parse(localStorage.getItem(KEY) || '{"ticks":{},"qty":{}}');
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+const jumps = document.getElementById("jumps");
+jumps.innerHTML = CATS.map(c => `<a href="#cat-${c.id}">${c.label}</a>`).join("") + `<a href="#store">Store & hours</a><a href="#allowance">Customs</a>`;
+
+const whoBox = document.getElementById("whoFilters");
+let whoFilter = "";
+whoBox.innerHTML = `<button type="button" class="filter on" data-who="">All people</button>` +
+  WHO.map(w => `<button type="button" class="filter" data-who="${w.id}">${w.label}</button>`).join("");
+whoBox.addEventListener("click", e => {
+  const b = e.target.closest("[data-who]");
+  if(!b) return;
+  whoFilter = b.dataset.who;
+  [...whoBox.children].forEach(x => x.classList.toggle("on", x === b));
+  render();
+});
+
+const list = document.getElementById("list");
+function searchUrl(item){
+  return "https://www.costco.co.uk/search?text=" + encodeURIComponent(item.q || item.name);
+}
+function money(n){ return "£" + n.toFixed(2); }
+
+function render(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const onlyTicked = document.getElementById("onlyTicked").checked;
+  const onlyHot = document.getElementById("onlyHot").checked;
+  let shown = 0, ticked = 0, total = 0, known = 0;
+
+  const byCat = {};
+  CATS.forEach(c => byCat[c.id] = []);
+  ITEMS.forEach(item => {
+    const qty = Math.max(1, parseInt(state.qty[item.id] || "1", 10) || 1);
+    const isTicked = !!state.ticks[item.id];
+    if(isTicked){
+      ticked++;
+      if(item.price != null){ total += item.price * qty; known++; }
+    }
+    const hay = (item.name + " " + item.why + " " + (item.aisle||"") + " " + item.who.join(" ")).toLowerCase();
+    if(q && !hay.includes(q)) return;
+    if(onlyTicked && !isTicked) return;
+    if(onlyHot && !item.hot) return;
+    if(whoFilter && !item.who.includes(whoFilter)) return;
+    byCat[item.cat].push({item, qty, isTicked});
+    shown++;
+  });
+
+  document.getElementById("tickedCount").textContent = ticked;
+  document.getElementById("totalLine").textContent = money(total) + " known";
+  document.getElementById("empty").hidden = shown > 0;
+
+  list.innerHTML = CATS.map(c => {
+    const rows = byCat[c.id];
+    if(!rows.length) return "";
+    return `<section class="sec" id="cat-${c.id}"><h2>${c.label} <span>${rows.length}</span></h2>` +
+      rows.map(({item, qty, isTicked}) => {
+        const badges = [
+          item.hot ? `<span class="badge hot">Priority</span>` : "",
+          ...item.who.map(w => `<span class="badge ${w}">${w}</span>`)
+        ].join("");
+        const price = item.price != null ? `<div class="price">${money(item.price)}</div>` : `<div class="price na">check shelf price</div>`;
+        const pdp = item.url ? `<a href="${item.url}" target="_blank" rel="noopener">Product page</a>` : "";
+        return `<article class="item${isTicked ? " ticked" : ""}" data-id="${item.id}">
+          <label class="check"><input type="checkbox" ${isTicked?"checked":""} data-tick="${item.id}" aria-label="Tick ${item.name}"></label>
+          <div class="meta">
+            <h3>${item.name}</h3>
+            <div class="sub">${item.aisle || ""}</div>
+            <p class="why">${item.why}</p>
+            <div class="badges">${badges}</div>
+          </div>
+          <div class="right">
+            ${price}
+            <div class="qty">
+              <button type="button" data-delta="-1" data-qty="${item.id}" aria-label="Decrease quantity">−</button>
+              <input type="number" min="1" max="99" value="${qty}" data-qtyinput="${item.id}" aria-label="Quantity">
+              <button type="button" data-delta="1" data-qty="${item.id}" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          <div class="links">
+            <a href="${searchUrl(item)}" target="_blank" rel="noopener">Costco search</a>
+            ${pdp}
+          </div>
+        </article>`;
+      }).join("") + `</section>`;
+  }).join("");
+}
+
+list.addEventListener("change", e => {
+  const t = e.target;
+  if(t.dataset.tick){
+    if(t.checked) state.ticks[t.dataset.tick] = true;
+    else delete state.ticks[t.dataset.tick];
+    save(); render();
+  }
+  if(t.dataset.qtyinput){
+    state.qty[t.dataset.qtyinput] = String(Math.max(1, parseInt(t.value,10) || 1));
+    save(); render();
+  }
+});
+list.addEventListener("click", e => {
+  const b = e.target.closest("[data-delta]");
+  if(!b) return;
+  const id = b.dataset.qty;
+  const next = Math.max(1, (parseInt(state.qty[id]||"1",10)||1) + parseInt(b.dataset.delta,10));
+  state.qty[id] = String(next);
+  save(); render();
+});
+
+["q","onlyTicked","onlyHot"].forEach(id => {
+  document.getElementById(id).addEventListener("input", render);
+  document.getElementById(id).addEventListener("change", render);
+});
+
+function tickedText(){
+  const lines = ["Costco MK — India gift list (ticked)", ""];
+  let total = 0;
+  CATS.forEach(c => {
+    const rows = ITEMS.filter(i => i.cat===c.id && state.ticks[i.id]);
+    if(!rows.length) return;
+    lines.push(c.label.toUpperCase());
+    rows.forEach(i => {
+      const qty = Math.max(1, parseInt(state.qty[i.id]||"1",10)||1);
+      const p = i.price != null ? money(i.price) : "check shelf price";
+      if(i.price != null) total += i.price * qty;
+      lines.push(`- ${qty}× ${i.name} (${p})`);
+    });
+    lines.push("");
+  });
+  lines.push("Known subtotal: " + money(total) + " (only items with a verified online price).");
+  lines.push("Alcohol limit: 2 litres per adult. Goods allowance (2026): ₹75,000.");
+  return lines.join("\n");
+}
+document.getElementById("copyBtn").onclick = async () => {
+  const text = tickedText();
+  try { await navigator.clipboard.writeText(text); document.getElementById("copyBtn").textContent = "Copied"; setTimeout(()=>document.getElementById("copyBtn").textContent="Copy ticked list", 1600); }
+  catch { prompt("Copy this list:", text); }
+};
+document.getElementById("shareBtn").onclick = async () => {
+  const text = tickedText();
+  if(navigator.share){ try { await navigator.share({title:"Costco India list", text}); return; } catch(e){} }
+  location.href = "https://wa.me/?text=" + encodeURIComponent(text);
+};
+document.getElementById("clearBtn").onclick = () => {
+  if(!confirm("Clear all ticks and quantities on this phone?")) return;
+  state.ticks = {}; state.qty = {}; save(); render();
+};
+
+document.getElementById("stickyfix");
+function setSticky(){
+  const h = document.querySelector("header.app").offsetHeight;
+  document.querySelector(".pills").style.top = h + "px";
+  document.querySelectorAll(".sec,.note").forEach(el => el.style.scrollMarginTop = (h + 52) + "px");
+}
+window.addEventListener("resize", setSticky);
+render(); setSticky();
+</script>
+</body>
+</html>
