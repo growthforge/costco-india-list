@@ -1,10 +1,10 @@
-# Costco Milton Keynes list
+# UK gift list — Costco, Selfridges & Oxford Street
 
-Phone-friendly checklist with two sections:
+Phone-friendly shopping list for:
 
-- **India gifts** — for a 12 Dec 2026 trip to family in Andhra Pradesh
-- **Home essentials** — best-value Costco buys for a Bedford household
+- **Costco Milton Keynes** — India gifts (12 Dec 2026 trip to Andhra) and Bedford home essentials
+- **Selfridges** and **Oxford Street** — tomorrow’s West End walk, Marble Arch to Tottenham Court Road
 
-Live page: https://growthforge.github.io/costco-india-list/
+Live: https://growthforge.github.io/costco-india-list/
 
-Prices and product photos come from costco.co.uk product pages opened on 20 Nov 2026. Warehouse shelf prices may differ. Items without a confirmed photo use an icon, never a wrong product image.
+Costco prices and product photos come from costco.co.uk pages opened on 20 Nov 2026. West End hours come from official store pages or locators on the same day; confirm at the door. No invented West End prices.
