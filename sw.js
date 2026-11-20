@@ -1,0 +1,131 @@
+/* UK gift list service worker — scope is this folder (/costco-india-list/). */
+const VERSION = "679bbb8b0d";
+const SHELL = "gift-shell-" + VERSION;
+const IMG = "gift-img-6c7c9a27"; // changes only when an image file changes
+const SHELL_URLS = ["./", "./index.html"];
+const IMAGES = [
+"img/ariel-pods.webp",
+"img/baileys.webp",
+"img/batteries-aa.webp",
+"img/bin-bags.webp",
+"img/cling.webp",
+"img/colgate.webp",
+"img/dates.webp",
+"img/dettol-wipes.webp",
+"img/dove.webp",
+"img/fairy-tabs.webp",
+"img/fairy-wup.webp",
+"img/ferrero-5pk.webp",
+"img/ferrero-t26.webp",
+"img/finish-tabs.webp",
+"img/foil.webp",
+"img/glenfiddich.webp",
+"img/hs-2in1.webp",
+"img/hs-shampoo.webp",
+"img/jw-gold.webp",
+"img/jw-green.webp",
+"img/kitchen-roll.webp",
+"img/ks-almonds.webp",
+"img/ks-cashews.webp",
+"img/ks-dishpacs.webp",
+"img/ks-fishoil.webp",
+"img/ks-multi.webp",
+"img/ks-pistachios.webp",
+"img/ks-scotch.webp",
+"img/ks-walnuts.webp",
+"img/ks-wup.webp",
+"img/lenor.webp",
+"img/lindor-1kg.webp",
+"img/lindor-4x.webp",
+"img/mixed-nuts.webp",
+"img/nescafe.webp",
+"img/olay.webp",
+"img/olive-oil.webp",
+"img/oralb-paste.webp",
+"img/persil-caps.webp",
+"img/persil-powder.webp",
+"img/powerbank.webp",
+"img/qstreet.webp",
+"img/raisins.webp",
+"img/rice.webp",
+"img/stores/apple.webp",
+"img/stores/boots.webp",
+"img/stores/costco.webp",
+"img/stores/disney.webp",
+"img/stores/fortnum.webp",
+"img/stores/hamleys.webp",
+"img/stores/hm.webp",
+"img/stores/home.webp",
+"img/stores/hp.webp",
+"img/stores/jd.webp",
+"img/stores/johnlewis.webp",
+"img/stores/liberty.webp",
+"img/stores/lush.webp",
+"img/stores/ms.webp",
+"img/stores/next.webp",
+"img/stores/nike.webp",
+"img/stores/oxford.webp",
+"img/stores/primark-east.webp",
+"img/stores/primark-ma.webp",
+"img/stores/selfridges.webp",
+"img/stores/uniqlo.webp",
+"img/stores/waterstones.webp",
+"img/stores/zara.webp",
+"img/sure-men.webp",
+"img/sure-women.webp",
+"img/toilet.webp",
+"img/towels.webp",
+"img/twinings-eb.webp",
+"img/twinings-eg.webp",
+"img/zoflora.webp"
+];
+
+self.addEventListener("install", e => {
+  e.waitUntil((async () => {
+    const s = await caches.open(SHELL);
+    await Promise.all(SHELL_URLS.map(u => s.add(new Request(u, {cache: "reload"})).catch(() => {})));
+    const i = await caches.open(IMG);
+    await Promise.all(IMAGES.map(async u => { if(!(await i.match(u))) await i.add(u).catch(() => {}); }));
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener("activate", e => {
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k.startsWith("gift-") && k !== SHELL && k !== IMG).map(k => caches.delete(k)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener("fetch", e => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin || !url.pathname.startsWith(new URL("./", location).pathname)) return;
+  // Pages: network first (so updates show at once), cached copy when offline.
+  if (req.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith(".html")) {
+    e.respondWith((async () => {
+      try {
+        const res = await fetch(req, {cache: "no-store"});
+        if (res.ok) { const c = await caches.open(SHELL); c.put("./index.html", res.clone()); }
+        return res;
+      } catch (_) {
+        const c = await caches.open(SHELL);
+        return (await c.match("./index.html")) || (await c.match("./")) || Response.error();
+      }
+    })());
+    return;
+  }
+  // Images: cache first, fill on miss.
+  if (url.pathname.includes("/img/")) {
+    e.respondWith((async () => {
+      const c = await caches.open(IMG);
+      const hit = await c.match(req, {ignoreSearch: true});
+      if (hit) return hit;
+      const res = await fetch(req);
+      if (res.ok) c.put(req, res.clone());
+      return res;
+    })());
+  }
+});

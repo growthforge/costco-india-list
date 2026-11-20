@@ -8,3 +8,5 @@ Phone-friendly shopping list for:
 Live: https://growthforge.github.io/costco-india-list/
 
 Costco prices and product photos come from costco.co.uk pages opened on 20 Nov 2026. West End hours come from official store pages or locators on the same day; confirm at the door. No invented West End prices.
+
+v4 (20 Nov 2026): mobile-first layout — bottom tab bar for stores and the ticked list, sticky search and filter chips, 44px tap targets, safe-area insets, and a service worker (`sw.js`) so the list works offline once loaded. Ticks stay in the same localStorage key (`costco-mk-list-v2`).
